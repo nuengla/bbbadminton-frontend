@@ -96,7 +96,9 @@ const SummaryPage: React.FC<SummaryPageProps> = ({}) => {
                 ((shuttlecockPrice || 0) * (shuttlecockAmount || 0) +
                   (courtPrice || 0)) /
                 playerList.length
-              )?.toLocaleString() || 0}
+              )
+                ?.toFixed(2)
+                .toLocaleString() || 0}
             </div>
             <div className="w-10 ms-2">บาท</div>
           </div>
