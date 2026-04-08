@@ -41,6 +41,7 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
     <>
       <div className="p-6 min-h-[calc(100dvh-68.5px)]">
         <h1 className="text-4xl mb-4">ผู้เล่น</h1>
+        <div className="mb-4">จำนวนผู้เล่นขั้นต่ำ 4 คน</div>
         <div className="flex gap-4 items-center mb-4">
           <TextField
             fullWidth
