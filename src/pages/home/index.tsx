@@ -115,7 +115,7 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
       </div>
       <div className="sticky bottom-0 p-4">
         <Button
-          disabled={playerList.length === 0}
+          disabled={playerList.length < 4}
           fullWidth
           variant="contained"
           onClick={onConfirm}
