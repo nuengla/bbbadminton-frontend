@@ -26,6 +26,9 @@ const PlayingPage: React.FC<PlayingPageProps> = ({}) => {
   }, []);
 
   function matchPlayers(players: PlayerType[]) {
+    if (!confirm()) {
+      return;
+    }
     // 1. sort จากคนน้อยไปมาก
     const sorted = [...players].sort((a, b) => a.playingCount - b.playingCount);
 
@@ -134,16 +137,18 @@ const PlayingPage: React.FC<PlayingPageProps> = ({}) => {
           fullWidth
           variant="contained"
           onClick={() => {
-            const data = matchPlayers(playerList);
-            setTeamA(data.teamA);
-            setTeamB(data.teamB);
-            localStorage.setItem(
-              "playerList",
-              JSON.stringify(data.updatedPlayers),
-            );
-            setPlayerList(
-              JSON.parse(localStorage.getItem("playerList") || "[]"),
-            );
+            const data: any = matchPlayers(playerList);
+            if (data) {
+              setTeamA(data.teamA || []);
+              setTeamB(data.teamB || []);
+              localStorage.setItem(
+                "playerList",
+                JSON.stringify(data.updatedPlayers),
+              );
+              setPlayerList(
+                JSON.parse(localStorage.getItem("playerList") || "[]"),
+              );
+            }
           }}
         >
           จับคู่
