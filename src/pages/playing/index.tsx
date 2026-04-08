@@ -26,9 +26,7 @@ const PlayingPage: React.FC<PlayingPageProps> = ({}) => {
   }, []);
 
   function matchPlayers(players: PlayerType[]) {
-    if (!confirm()) {
-      return;
-    }
+    if (!confirm()) return false;
     // 1. sort จากคนน้อยไปมาก
     const sorted = [...players].sort((a, b) => a.playingCount - b.playingCount);
 
@@ -46,7 +44,7 @@ const PlayingPage: React.FC<PlayingPageProps> = ({}) => {
 
     // 5. update playingCount
     const updatedPlayers = players.map((p) => {
-      const found = selected.find((s) => s.name === p.name);
+      const found = selected.find((s) => s.id === p.id);
       if (found) {
         return {
           ...p,
@@ -65,7 +63,7 @@ const PlayingPage: React.FC<PlayingPageProps> = ({}) => {
 
   return (
     <>
-      <div className="p-6 min-h-dvh">
+      <div className="p-6 min-h-[calc(100dvh-68.5px)]">
         <div className="flex justify-between mb-4">
           <Button
             onClick={() => {
@@ -132,15 +130,15 @@ const PlayingPage: React.FC<PlayingPageProps> = ({}) => {
           </TableContainer>
         </div>
       </div>
-      <div className="sticky bottom-0 p-4">
+      <div className="sticky bottom-0 p-4 bg-white">
         <Button
           fullWidth
           variant="contained"
           onClick={() => {
             const data: any = matchPlayers(playerList);
             if (data) {
-              setTeamA(data.teamA || []);
-              setTeamB(data.teamB || []);
+              setTeamA(data.teamA);
+              setTeamB(data.teamB);
               localStorage.setItem(
                 "playerList",
                 JSON.stringify(data.updatedPlayers),
