@@ -25,38 +25,113 @@ const PlayingPage: React.FC<PlayingPageProps> = ({}) => {
     setPlayerList(JSON.parse(localStorage.getItem("playerList") || "[]"));
   }, []);
 
+  let currentRound = Number(localStorage.getItem("round") || 1);
+
   function matchPlayers(players: PlayerType[]) {
-    if (!confirm()) return false;
-    // 1. sort จากคนน้อยไปมาก
-    const sorted = [...players].sort((a, b) => a.playingCount - b.playingCount);
+    if (!confirm("จับคู่ใหม่ ?")) return false;
 
-    // 2. shuffle นิดหน่อย (เฉพาะ top คนที่เล่นน้อย)
-    const candidates = sorted.slice(0, 6).sort(() => Math.random() - 0.5);
+    const MIN_REST = 1; // ต้องพักอย่างน้อย 1 เกม
 
-    // 3. เลือก 4 คน
-    const selected = candidates.slice(0, 4);
+    const getPairScore = (a: PlayerType, b: PlayerType) => {
+      return (a.playedWith?.[b.id] || 0) + (b.playedWith?.[a.id] || 0);
+    };
 
-    // 4. shuffle อีกทีเพื่อคละทีม
-    const shuffled = selected.sort(() => Math.random() - 0.5);
+    // 1. sort โดย:
+    // - คนที่พักนาน (priority สูง)
+    // - แล้วค่อยดู playingCount
+    const sorted = [...players].sort((a, b) => {
+      const restA = currentRound - (a.lastPlayedRound || 0);
+      const restB = currentRound - (b.lastPlayedRound || 0);
 
-    const teamA = [shuffled[0], shuffled[1]];
-    const teamB = [shuffled[2], shuffled[3]];
-
-    // 5. update playingCount
-    const updatedPlayers = players.map((p) => {
-      const found = selected.find((s) => s.id === p.id);
-      if (found) {
-        return {
-          ...p,
-          playingCount: p.playingCount + 1,
-        };
-      }
-      return p;
+      if (restA !== restB) return restB - restA; // พักนานก่อน
+      return a.playingCount - b.playingCount; // เล่นน้อยก่อน
     });
 
+    // 2. filter คนที่ยังพักไม่พอ
+    let candidates = sorted.filter((p) => {
+      const rest = currentRound - (p.lastPlayedRound || 0);
+      return rest > MIN_REST;
+    });
+
+    // ถ้าคนไม่พอ → ยอมเอาคนที่เพิ่งเล่นมา
+    if (candidates.length < 4) {
+      candidates = sorted;
+    }
+
+    // 3. เอา top 6 + shuffle
+    candidates = candidates.slice(0, 6).sort(() => Math.random() - 0.5);
+
+    const selected = candidates.slice(0, 4);
+
+    // 4. หา team ที่ซ้ำต่ำสุด
+    const combos = [
+      [
+        [0, 1],
+        [2, 3],
+      ],
+      [
+        [0, 2],
+        [1, 3],
+      ],
+      [
+        [0, 3],
+        [1, 2],
+      ],
+    ];
+
+    let best: any = null;
+    let minScore = Infinity;
+
+    for (const combo of combos) {
+      const [teamAIdx, teamBIdx] = combo;
+
+      const teamA = teamAIdx.map((i) => selected[i]);
+      const teamB = teamBIdx.map((i) => selected[i]);
+
+      const score =
+        getPairScore(teamA[0], teamA[1]) + getPairScore(teamB[0], teamB[1]);
+
+      if (score < minScore) {
+        minScore = score;
+        best = { teamA, teamB };
+      }
+    }
+
+    // 5. update
+    const updatedPlayers = players.map((p) => {
+      const isInMatch =
+        best.teamA.some((t: any) => t.id === p.id) ||
+        best.teamB.some((t: any) => t.id === p.id);
+
+      if (!isInMatch) return p;
+
+      const newPlayedWith = { ...(p.playedWith || {}) };
+
+      const team = best.teamA.some((t: any) => t.id === p.id)
+        ? best.teamA
+        : best.teamB;
+
+      team.forEach((t: any) => {
+        if (t.id !== p.id) {
+          newPlayedWith[t.id] = (newPlayedWith[t.id] || 0) + 1;
+        }
+      });
+
+      return {
+        ...p,
+        playingCount: p.playingCount + 1,
+        playedWith: newPlayedWith,
+        lastPlayedRound: currentRound,
+      };
+    });
+
+    // 6. เพิ่มรอบ
+    currentRound++;
+    localStorage.setItem("round", String(currentRound));
+
     return {
-      teamA,
-      teamB,
+      teamA: best.teamA,
+      teamB: best.teamB,
       updatedPlayers,
     };
   }
@@ -75,7 +150,7 @@ const PlayingPage: React.FC<PlayingPageProps> = ({}) => {
           <Button
             color="success"
             onClick={() => {
-              if (confirm()) {
+              if (confirm("เล่นเสร็จแล้ว ?")) {
                 window.location.href = "/summary";
               }
             }}

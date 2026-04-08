@@ -109,8 +109,9 @@ const SummaryPage: React.FC<SummaryPageProps> = ({}) => {
           fullWidth
           variant="contained"
           onClick={() => {
-            if (confirm()) {
+            if (confirm("ยืนยันล้างค่า ?")) {
               localStorage.removeItem("playerList");
+              localStorage.removeItem("round");
               window.location.href = "/";
             }
           }}

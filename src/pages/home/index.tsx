@@ -21,6 +21,8 @@ export type PlayerType = {
   id: string;
   name: string;
   playingCount: number;
+  playedWith?: Record<string, number>;
+  lastPlayedRound?: number;
 };
 
 const HomePage: React.FC<HomePageProps> = ({}) => {
