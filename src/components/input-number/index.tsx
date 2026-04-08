@@ -50,6 +50,7 @@ export default function NumberField({
         id={id}
         render={(props, state) => (
           <OutlinedInput
+            inputMode="numeric"
             label={label}
             inputRef={props.ref}
             value={state.inputValue}
