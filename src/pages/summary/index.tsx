@@ -92,13 +92,13 @@ const SummaryPage: React.FC<SummaryPageProps> = ({}) => {
           <div>จ่ายคนละ</div>
           <div className="flex">
             <div>
-              {(
-                ((shuttlecockPrice || 0) * (shuttlecockAmount || 0) +
-                  (courtPrice || 0)) /
-                playerList.length
-              )
-                ?.toFixed(2)
-                .toLocaleString() || 0}
+              {Number(
+                (
+                  ((shuttlecockPrice || 0) * (shuttlecockAmount || 0) +
+                    (courtPrice || 0)) /
+                  (playerList.length || 1)
+                ).toFixed(2),
+              ).toLocaleString()}
             </div>
             <div className="w-10 ms-2">บาท</div>
           </div>
