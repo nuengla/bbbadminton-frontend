@@ -9,11 +9,9 @@ type SummaryPageProps = {
 
 const SummaryPage: React.FC<SummaryPageProps> = ({}) => {
   const [playerList, setPlayerList] = useState<PlayerType[]>([]);
-  const [courtPrice, setCourtPrice] = useState<number | null>(null);
-  const [shuttlecockPrice, setShuttlecockPrice] = useState<number | null>(null);
-  const [shuttlecockAmount, setShuttlecockAmount] = useState<number | null>(
-    null,
-  );
+  const [courtPrice, setCourtPrice] = useState<number>(0);
+  const [shuttlecockPrice, setShuttlecockPrice] = useState<number>(0);
+  const [shuttlecockAmount, setShuttlecockAmount] = useState<number>(0);
 
   useEffect(() => {
     setPlayerList(JSON.parse(localStorage.getItem("playerList") || "[]"));
