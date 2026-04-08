@@ -73,13 +73,14 @@ const PlayingPage: React.FC<PlayingPageProps> = ({}) => {
             กลับ
           </Button>
           <Button
-            color="error"
+            color="success"
             onClick={() => {
-              localStorage.removeItem("playerList");
-              window.location.href = "/";
+              if (confirm()) {
+                window.location.href = "/summary";
+              }
             }}
           >
-            ล้างค่า
+            เล่นเสร็จ
           </Button>
         </div>
 

@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./pages/home";
 import PlayingPage from "./pages/playing";
+import SummaryPage from "./pages/summary";
 
 function App() {
   const router = createBrowserRouter([
@@ -11,6 +12,10 @@ function App() {
     {
       path: "/playing",
       element: <PlayingPage />,
+    },
+    {
+      path: "/summary",
+      element: <SummaryPage />,
     },
   ]);
 
