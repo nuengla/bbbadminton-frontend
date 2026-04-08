@@ -1,6 +1,5 @@
 import {
   Button,
-  IconButton,
   Paper,
   Table,
   TableBody,
