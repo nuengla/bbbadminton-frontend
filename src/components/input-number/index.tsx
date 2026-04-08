@@ -50,7 +50,6 @@ export default function NumberField({
         id={id}
         render={(props, state) => (
           <OutlinedInput
-            inputMode="numeric"
             label={label}
             inputRef={props.ref}
             value={state.inputValue}
@@ -61,6 +60,10 @@ export default function NumberField({
             onFocus={props.onFocus}
             slotProps={{
               input: props,
+            }}
+            inputProps={{
+              ...props,
+              inputMode: "numeric",
             }}
             sx={{ pr: 0 }}
           />
